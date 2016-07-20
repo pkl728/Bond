@@ -45,7 +45,7 @@ extension UISegmentedControl {
         }
       }
             
-      self.bnd_controlEvent.filter { $0 == UIControlEvents.ValueChanged }.observe { [weak self, weak bnd_selectedSegmentIndex] event in
+      self.bnd_controlEvent.filter { $0 == UIControlEvents.valueChanged }.observe { [weak self, weak bnd_selectedSegmentIndex] event in
         guard let unwrappedSelf = self, let bnd_selectedSegmentIndex = bnd_selectedSegmentIndex else { return }
         updatingFromSelf = true
         bnd_selectedSegmentIndex.next(unwrappedSelf.selectedSegmentIndex)

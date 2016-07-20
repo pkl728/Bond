@@ -46,7 +46,7 @@ extension UITextView {
         }
       }
       
-      NSNotificationCenter.defaultCenter().bnd_notification(UITextViewTextDidChangeNotification, object: self).observe { [weak bnd_text] notification in
+      NotificationCenter.default().bnd_notification(NSNotification.Name.UITextViewTextDidChange.rawValue, object: self).observe { [weak bnd_text] notification in
         if let textView = notification.object as? UITextView, bnd_text = bnd_text {
           updatingFromSelf = true
           bnd_text.next(textView.text)
@@ -58,22 +58,22 @@ extension UITextView {
     }
   }
   
-  public var bnd_attributedText: Observable<NSAttributedString?> {
+  public var bnd_attributedText: Observable<AttributedString?> {
     if let bnd_attributedText: AnyObject = objc_getAssociatedObject(self, &AssociatedKeys.AttributedTextKey) {
-      return bnd_attributedText as! Observable<NSAttributedString?>
+      return bnd_attributedText as! Observable<AttributedString?>
     } else {
-      let bnd_attributedText = Observable<NSAttributedString?>(self.attributedText)
+      let bnd_attributedText = Observable<AttributedString?>(self.attributedText)
       objc_setAssociatedObject(self, &AssociatedKeys.AttributedTextKey, bnd_attributedText, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
       
       var updatingFromSelf: Bool = false
       
-      bnd_attributedText.observeNew { [weak self] (text: NSAttributedString?) in
+      bnd_attributedText.observeNew { [weak self] (text: AttributedString?) in
         if !updatingFromSelf {
           self?.attributedText = text
         }
       }
       
-      NSNotificationCenter.defaultCenter().bnd_notification(UITextViewTextDidChangeNotification, object: self).observe { [weak bnd_attributedText] notification in
+      NotificationCenter.default().bnd_notification(NSNotification.Name.UITextViewTextDidChange.rawValue, object: self).observe { [weak bnd_attributedText] notification in
         if let textView = notification.object as? UITextView, bnd_attributedText = bnd_attributedText {
           updatingFromSelf = true
           bnd_attributedText.next(textView.attributedText)

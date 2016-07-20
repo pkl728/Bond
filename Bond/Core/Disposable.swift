@@ -43,7 +43,7 @@ public final class BlockDisposable: DisposableType {
   }
   
   private var handler: (() -> Void)?
-  private let lock = NSRecursiveLock(name: "com.swift-bond.Bond.BlockDisposable")
+  private let lock = RecursiveLock(name: "com.swift-bond.Bond.BlockDisposable")
   
   public init(_ handler: () -> Void) {
     self.handler = handler
@@ -61,7 +61,7 @@ public final class BlockDisposable: DisposableType {
 public final class SerialDisposable: DisposableType {
   
   public private(set) var isDisposed: Bool = false
-  private let lock = NSRecursiveLock(name: "com.swift-bond.Bond.SerialDisposable")
+  private let lock = RecursiveLock(name: "com.swift-bond.Bond.SerialDisposable")
   
   /// Will dispose other disposable immediately if self is already disposed.
   public var otherDisposable: DisposableType? {
@@ -93,7 +93,7 @@ public final class CompositeDisposable: DisposableType {
   
   public private(set) var isDisposed: Bool = false
   private var disposables: [DisposableType] = []
-  private let lock = NSRecursiveLock(name: "com.swift-bond.Bond.CompositeDisposable")
+  private let lock = RecursiveLock(name: "com.swift-bond.Bond.CompositeDisposable")
   
   public convenience init() {
     self.init([])
@@ -103,7 +103,7 @@ public final class CompositeDisposable: DisposableType {
     self.disposables = disposables
   }
   
-  public func addDisposable(disposable: DisposableType) {
+  public func addDisposable(_ disposable: DisposableType) {
     lock.lock()
     if isDisposed {
       disposable.dispose()
@@ -143,7 +143,7 @@ public final class DisposeBag: DisposableType {
   
   /// Adds the given disposable to the bag.
   /// DisposableType will be disposed when the bag is deinitialized.
-  public func addDisposable(disposable: DisposableType) {
+  public func addDisposable(_ disposable: DisposableType) {
     disposables.append(disposable)
   }
   
@@ -161,7 +161,7 @@ public final class DisposeBag: DisposableType {
 }
 
 public extension DisposableType {
-  public func disposeIn(disposeBag: DisposeBag) {
+  public func disposeIn(_ disposeBag: DisposeBag) {
     disposeBag.addDisposable(self)
   }
 }
