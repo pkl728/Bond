@@ -31,18 +31,18 @@ public struct Queue {
   public typealias TimeInterval = Foundation.TimeInterval
   
   public static let Main = Queue(queue: DispatchQueue.main);
-  public static let Default = Queue(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault))
-  public static let Background = Queue(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosBackground))
+  public static let Default = Queue(queue: DispatchQueue.global(qos: .default))
+  public static let Background = Queue(queue: DispatchQueue.global(qos: .background))
   
   public private(set) var queue: DispatchQueue
 
-  public init(queue: DispatchQueue = DispatchQueue(label: "com.swift-bond.Bond.Queue", attributes: DispatchQueueAttributes.serial)) {
+  public init(queue: DispatchQueue = DispatchQueue(label: "com.swift-bond.Bond.Queue")) {
     self.queue = queue
   }
   
   public func after(_ interval: Foundation.TimeInterval, block: () -> Void) {
     let dispatchTime = DispatchTime.now() + Double(Int64(interval * Foundation.TimeInterval(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-    queue.after(when: dispatchTime, execute: block)
+    queue.asyncAfter(deadline: dispatchTime, execute: block)
   }
   
   public func async(_ block: () -> Void) {

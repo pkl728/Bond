@@ -47,7 +47,7 @@ extension UITextView {
       }
       
       NotificationCenter.default.bnd_notification(NSNotification.Name.UITextViewTextDidChange.rawValue, object: self).observe { [weak bnd_text] notification in
-        if let textView = notification.object as? UITextView, bnd_text = bnd_text {
+        if let textView = notification.object as? UITextView, let bnd_text = bnd_text {
           updatingFromSelf = true
           bnd_text.next(textView.text)
           updatingFromSelf = false
@@ -58,16 +58,16 @@ extension UITextView {
     }
   }
   
-  public var bnd_attributedText: Observable<AttributedString?> {
+  public var bnd_attributedText: Observable<NSAttributedString?> {
     if let bnd_attributedText: AnyObject = objc_getAssociatedObject(self, &AssociatedKeys.AttributedTextKey) {
-      return bnd_attributedText as! Observable<AttributedString?>
+      return bnd_attributedText as! Observable<NSAttributedString?>
     } else {
-      let bnd_attributedText = Observable<AttributedString?>(self.attributedText)
+      let bnd_attributedText = Observable<NSAttributedString?>(self.attributedText)
       objc_setAssociatedObject(self, &AssociatedKeys.AttributedTextKey, bnd_attributedText, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
       
       var updatingFromSelf: Bool = false
       
-      bnd_attributedText.observeNew { [weak self] (text: AttributedString?) in
+      bnd_attributedText.observeNew { [weak self] (text: NSAttributedString?) in
         if !updatingFromSelf {
           self?.attributedText = text
         }
